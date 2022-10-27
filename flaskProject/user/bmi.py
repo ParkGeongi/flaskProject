@@ -28,8 +28,6 @@ class Bmi(object):
         self.kg = kg
         self.biman = ""
 
-
-
     def __str__(self):
         return f'{self.name} {self.cm} {self.kg} {self.biman}'
 
@@ -65,8 +63,6 @@ class Bmi(object):
     @staticmethod
     def delete_bmi(ls, name):
         del ls[[i for i, j in enumerate(ls) if j.name == name][0]]
-
-
 
     @staticmethod
     def result(ls):

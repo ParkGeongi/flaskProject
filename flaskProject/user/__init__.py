@@ -11,14 +11,14 @@ ls_3 = []
 ls4 = []
 while True:
     menu = Common.menu(["종료","BMI","주소록","성적표","개인정보"])
-    if menu == 0:
+    if menu == "0":
         print("### 앱 종료 ###")
         break
-    elif menu == 1:
+    elif menu == "1":
         print("### BMI ###")
         submenu = Common.menu(["종료", "BMI등록", "BMI목록", "BMI삭제"])
-        if submenu == 0: break
-        elif submenu == 1:
+        if submenu == "0": break
+        elif submenu == "1":
             biman = Bmi.new_bmi()
             ls1.append(biman)
         elif submenu == 2:
