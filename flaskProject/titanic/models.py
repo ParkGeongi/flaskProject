@@ -71,8 +71,15 @@ class TitanicModel(object):
 
     @staticmethod
     def age_ordinal(this)->object: # 연령대 10대 20대 30대
-
-
+        for i in [this.train,this.test]:
+            i['Age'] = i['Age'].fillna(-0.5)
+        bins = [-1,0,5,12,18,24,35,68,np.inf]
+        labels = ['Unknown', 'Baby', 'Child', 'Teenager', 'Student', 'Young Adult', 'Adult', 'Senior']
+        age_mapping = {'Unknown': 0, 'Baby': 1, 'Child': 2, 'Teenager': 3,
+                       'Student': 4,'Young Adult': 5, 'Adult': 6, 'Senior': 7}
+        for i in [this.train,this.test]:
+            i['AgeGroup'] = pd.cut(i['Age'],bins = bins, labels = labels)
+            i['AgeGroup'] = i['AgeGroup'].map(age_mapping)
 
         return this
 
@@ -99,10 +106,10 @@ if __name__ == '__main__':
     this = TitanicModel.sex_nominal(this)
     this = TitanicModel.fare_ordinal(this)
     this = TitanicModel.embarked_nominal(this)
-    print(this.train['FareBand'])
-    print(this.train['Gender'])
-    print(this.train['Embarked'])
+    this = TitanicModel.age_ordinal(this)
+    print(this.train.isnull().sum())
     print(this.train.head())
+
 
 
 

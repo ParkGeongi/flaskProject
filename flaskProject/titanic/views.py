@@ -23,7 +23,6 @@ class TitanicController(object):
         this.id = this.test['PassengerId']
         # columns 편집과정
 
-        this = model.pclass_ordinal(this)
         this = model.sex_nominal(this)
         this = model.age_ordinal(this)
         this = model.fare_ordinal(this)
@@ -49,6 +48,11 @@ class TitanicController(object):
 
 
 
+if __name__ == '__main__':
+    this = Dataset()
+    this = TitanicController().preprocess("train.csv","test.csv")
+    print(this.train.columns)
+    print(this.train.head())
 
 
 
