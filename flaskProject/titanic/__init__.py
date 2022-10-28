@@ -1,3 +1,4 @@
+
 from titanic.template import Plot
 from titanic.views import TitanicController
 from util.common import Common
@@ -28,6 +29,5 @@ if __name__ == '__main__':
             df = api.sumit('train.csv','tset.csv')
         else:
             print(" 해당 메뉴 없음 ")
-
 
 

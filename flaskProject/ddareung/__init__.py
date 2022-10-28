@@ -29,8 +29,6 @@ if __name__ == '__main__':
             #hour_bef_pm10              90
             #hour_bef_pm2.5            117
 
-
-
         elif menu == "2":
             print(" ### Modeling ###")
 
