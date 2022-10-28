@@ -4,6 +4,7 @@ from util.common import Common
 
 
 if __name__ == '__main__':
+
     while True:
         api = TitanicController()
         menu = Common.menu(["종료","시각화","모델링","머신러닝","베포"]) #모델링 : 전처리 + 모델 + 후처리 여러번 함
@@ -18,6 +19,7 @@ if __name__ == '__main__':
         elif menu == "2":
             print(" ### Modeling ###")
             df = api.modeling('train.csv','test.csv')
+
         elif menu == "3":
             print(" ### Machine Learning ###")
             df = api.learning('train.csv','test.csv')

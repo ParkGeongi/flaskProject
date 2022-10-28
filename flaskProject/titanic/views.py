@@ -4,8 +4,11 @@ from util.dataset import Dataset
 
 class TitanicController(object):
 
+
+
     def __int__(self):
         pass
+
     def __str__(self):
         return f""
 
@@ -19,7 +22,6 @@ class TitanicController(object):
         this.test = model.new_model(test)
         this.id = this.test['PassengerId']
         # columns 편집과정
-
         return this
 
 
@@ -28,7 +30,6 @@ class TitanicController(object):
         this = self.preprocess(train, test)
         this.label = model.creat_label(this)
         this.train = model.creat_train(this)
-
         return this
 
     def learning(self):
