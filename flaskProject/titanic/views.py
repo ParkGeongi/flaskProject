@@ -27,7 +27,10 @@ class TitanicController(object):
         this = model.age_ordinal(this)
         this = model.fare_ordinal(this)
         this = model.embarked_nominal(this)
-
+        this = model.title_norminal(this)
+        this = model.drop_features(this,
+                                   'PassengerId', 'Name', 'Sex', 'Age',
+                                   'SibSp', 'Parch', 'Ticket', 'Fare', 'Cabin')
         return this
 
     def postprocess(self):
@@ -49,8 +52,9 @@ class TitanicController(object):
 
 
 if __name__ == '__main__':
+    C = TitanicController()
     this = Dataset()
-    this = TitanicController().preprocess("train.csv","test.csv")
+    this = C.preprocess("train.csv","test.csv")
     print(this.train.columns)
     print(this.train.head())
 
