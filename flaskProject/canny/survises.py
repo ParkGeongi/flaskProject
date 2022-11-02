@@ -1,65 +1,83 @@
-import numpy as np
-from PIL import Image
-import requests
 from io import BytesIO
+import cv2
+import numpy as np
+import pandas as pd
+import requests
+from PIL import Image
+from util.dataset import Dataset
 import matplotlib.pyplot as plt
+from const.crawler import HEADERS
 
-class numcv:
+
+def Origin(url):
+    #res = requests.get(self.url, headers={'User-Agent': 'My User Agent 1.0'})
+    return (lambda x: np.array(x))(url)
+
+def Gray(url):
+    img = (lambda x: np.array(x))(url)
+    return img[:, :, 0] * 0.114 + img[:, :, 1] * 0.587 + img[:, :, 2] * 0.229
+
+def Canny(img):
+    return (lambda x: cv2.Canny(x, 10, 100))(img)
+
+def image_read(fname):
+    return (lambda x: cv2.imread('./data/' + x))(fname)
+
+def HoughLines():
+    pass
+    '''
+    람다식의 프로토타입
+    def new_model(self, fname) -> object:
+        img = cv2.imread('./data/' + fname)
+        return img
+    '''
+
+
+'''
+class LennaModel(object):
+    dataset = Dataset()
+
     def __init__(self):
-        headers = {
-            'User-Agent': 'My User Agent 1.0'
-        }  # 위키피디아 이미지를 가져오기 위해 헤더를 생성
-        res = requests.get("https://upload.wikimedia.org/wikipedia/ko/2/24/Lenna.png", headers=headers)  # 헤더를 적용해서 요청
-        lena = Image.open(BytesIO(res.content))  # 얻어온 이미지를 PIL 형식으로 오픈
-        self.lena = np.array(lena)  # PIL 이미지를 numpy 로 변환
-        self.createDef()
-
-    def createDef(self):
         self.ADAPTIVE_THRESH_MEAN_C = 0
         self.ADAPTIVE_THRESH_GAUSSIAN_C = 1
         self.THRESH_BINARY = 2
         self.THRESH_BINARY_INV = 3
 
-    def imshow(self, img):
-        img = Image.fromarray(img)  # numpy 배열을 PIL 이미지로 변환
-        plt.imshow(img)
-        plt.show()
+        self.lenna = Image.open(BytesIO(requests.get("https://upload.wikimedia.org/wikipedia/ko/2/24/Lenna.png",
+                                                     headers={'User-Agent': 'My User Agent 1.0'}).content))
 
-    def grayscale(self, img):
-        dst = img[:, :, 0] * 0.114 + img[:, :, 1] * 0.587 + img[:, :, 2] * 0.229  # GRAYSCALE 변환 공식
-        return dst
+    def get(self):
+        return np.array(self.lenna)
 
-    def filter2D(self, src, kernel, delta=0):
-        # 가장자리 픽셀을 (커널의 길이 // 2) 만큼 늘리고 새로운 행렬에 저장
-        halfX = kernel.shape[0] // 2
-        halfY = kernel.shape[1] // 2
-        cornerPixel = np.zeros((src.shape[0] + halfX * 2, src.shape[1] + halfY * 2), dtype=np.uint8)
+    def __str__(self):
+        return ""
 
-        # (커널의 길이 // 2) 만큼 가장자리에서 안쪽(여기서는 1만큼 안쪽)에 있는 픽셀들의 값을 입력 이미지의 값으로 바꾸어 가장자리에 0을 추가한 효과를 봄
-        cornerPixel[halfX:cornerPixel.shape[0] - halfX, halfY:cornerPixel.shape[1] - halfY] = src
+    def preprocess(self):
+        pass
 
-        dst = np.zeros((src.shape[0], src.shape[1]), dtype=np.float64)
+    def new_model(self, fname) -> object:
+        img = cv2.imread('./data/' + fname)
+        return img
 
-        for y in np.arange(src.shape[1]):
-            for x in np.arange(src.shape[0]):
-                # 필터링 연산
-                dst[x, y] = (kernel * cornerPixel[x: x + kernel.shape[0], y: y + kernel.shape[1]]).sum() + delta
-        return dst
+    def canny(self, src):
+        src = self.gaussian_filter(src)
+        src = self.calc_gradient(src)
+        src = self.non_maximum_Suppression(src)
+        src = self.edge_tracking(src)
 
-    def GaussianBlur(self, src, sigmax, sigmay):
-        # 가로 커널과 세로 커널 행렬을 생성
-        i = np.arange(-4 * sigmax, 4 * sigmax + 1)
-        j = np.arange(-4 * sigmay, 4 * sigmay + 1)
-        # 가우시안 계산
-        mask = np.exp(-(i ** 2 / (2 * sigmax ** 2))) / (np.sqrt(2 * np.pi) * sigmax)
-        maskT = np.exp(-(j ** 2 / (2 * sigmay ** 2))) / (np.sqrt(2 * np.pi) * sigmay)
-        mask = mask[:, np.newaxis]
-        maskT = maskT[:, np.newaxis].T
+        return src
 
-        dst = self.filter2D(self.filter2D(src, mask), maskT)  # 두번 필터링
-        return dst  # float64로 dtype을 변경해서 반환
+    def gaussian_filter(self):
 
-    def adaptiveThreshold(self, src, adaptiveMethod, thresholdType, blocksize, C):
+        pass
+
+    def calc_gradient(self):
+        pass
+
+    def non_maximum_Suppression(self):
+        pass
+
+    def edge_tracking(self, src, blocksize, adaptiveMethod, thresholdType, C):
         mask = np.zeros((blocksize, blocksize))
         if adaptiveMethod == self.ADAPTIVE_THRESH_MEAN_C:
             pass
@@ -103,11 +121,45 @@ class numcv:
                         dst[x, y] = 255
         return dst
 
-    def Canny(self, src, lowThreshold, highThreshold):
+class GaussianBlur(object):
+    def __init__(self,src,sigmax,sigmay):
+        self.src = src
+        self.sigmax = sigmax
+        self.sigmay = sigmay
+
+
+    def get(self):
+        sigmax = self.sigmax
+        sigmay = self.sigmay
+        src = self.src
+        # 가로 커널과 세로 커널 행렬을 생성
+        i = np.arange(-4 * sigmax, 4 * sigmax + 1)
+        j = np.arange(-4 * sigmay, 4 * sigmay + 1)
+        # 가우시안 계산
+        mask = np.exp(-(i ** 2 / (2 * sigmax ** 2))) / (np.sqrt(2 * np.pi) * sigmax)
+        maskT = np.exp(-(j ** 2 / (2 * sigmay ** 2))) / (np.sqrt(2 * np.pi) * sigmay)
+        mask = mask[:, np.newaxis]
+        maskT = maskT[:, np.newaxis].T
+
+
+        return filter2D(filter2D(src,mask),maskT) # 두번 필터링
+
+class Canny(object):
+    def __init__(self,src,lowThreshold,highThreshold):
+        self.src = src
+        self.lowThreshold = lowThreshold
+        self.highThreshold = highThreshold
+
+    def get(self):
+        src = self.src
+        lowThreshold = self.lowThreshold
+        highThreshold = self.highThreshold
+
+
         Kx = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])  # x축 소벨 행렬로 미분
         Ky = np.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]])  # y축 소벨 행렬로 미분
-        Ix = self.filter2D(src, Kx)
-        Iy = self.filter2D(src, Ky)
+        Ix = filter2D(src, Kx)
+        Iy = filter2D(src, Ky)
         G = np.hypot(Ix, Iy)  # 피타고라스 빗변 구하기
         img = G / G.max() * 255  # 엣지를 그레이스케일로 표현
         D = np.arctan2(Iy, Ix)  # 아크탄젠트 이용해서 그래디언트를 구함
@@ -183,9 +235,19 @@ class numcv:
                         pass
         return img
 
-if __name__ == '__main__':
-    cv = numcv()  # numcv를 cv 객체로 선언
-    gray = cv.grayscale(cv.lena)
-    gray = cv.GaussianBlur(gray, 1, 1)
-    gray = cv.Canny(gray, 50, 150)
-    cv.imshow(gray)
+def filter2D( src, kernel, delta = 0):
+    # 가장자리 픽셀을 (커널의 길이 // 2) 만큼 늘리고 새로운 행렬에 저장
+    halfX = kernel.shape[0] // 2
+    halfY = kernel.shape[1] // 2
+    cornerPixel = np.zeros((src.shape[0] + halfX * 2, src.shape[1] + halfY * 2), dtype=np.uint8)
+
+        # (커널의 길이 // 2) 만큼 가장자리에서 안쪽(여기서는 1만큼 안쪽)에 있는 픽셀들의 값을 입력 이미지의 값으로 바꾸어 가장자리에 0을 추가한 효과를 봄
+    cornerPixel[halfX:cornerPixel.shape[0] - halfX, halfY:cornerPixel.shape[1] - halfY] = src
+    dst = np.zeros((src.shape[0], src.shape[1]), dtype=np.float64)
+
+    for y in np.arange(src.shape[1]):
+        for x in np.arange(src.shape[0]):
+            # 필터링 연산
+            dst[x, y] = (kernel * cornerPixel[x: x + kernel.shape[0], y: y + kernel.shape[1]]).sum() + delta
+    return dst
+'''

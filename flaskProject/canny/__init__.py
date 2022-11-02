@@ -1,6 +1,5 @@
 
-from lena.models import LennaModel, CannyModel
-from lena.views import LennaController
+from canny.views import LennaController
 from util.common import Common
 '''
 이미지 읽기의 flag는 3가지가 있습니다.
@@ -20,33 +19,22 @@ cv2.waitKey(0) : keyboard입력을 대기하는 함수로
 cv2.destroyAllWindows() 화면에 나타난 윈도우를 종료합니다. 
                         일반적으로 위 3개는 같이 사용됩니다.
 '''
+
+api = LennaController()
+url = "https://docs.opencv.org/4.x/roi.jpg"
+img = "Lenna.png"
 if __name__ == '__main__':
+    menus = ["종료", "원본보기", "그레이 스케일","엣지검출 disk","엣지검출 memory"]
 
     while True:
-
-        print(" ### 이미지 변환 ### ")
-
-        url = input("url 입력")
-        api = LennaController(url)
-        menu = Common.menu(["종료", "원본보기", "그레이 스케일","엣지검출", "머신러닝", "배포"])
+        menu = Common.menu(menus)
         if menu == "0":
-            print(" ### 종료 ### ")
+            print(f" ### {menus[0]} ### ")
             break
-
-        elif menu == "1":
-            print(" ### 원본보기 ### ")
-            img = api.origin_img()
-
-        elif menu == "2":
-            api.gray_img()
-            print(" ### 그레이스케일 ### ")
-
-        elif menu == "3":
-            api.canny_edge()
-            print(" ### 엣지검출 ### ")
-
-        elif menu == "4":
-            print(" ### 배포 ### ")
+        elif menu == "1": api.Origin(url,menus[1])
+        elif menu == "2": api.Gray(url,menus[2])
+        elif menu == "3": api.CannyDisk(img,menus[3])
+        elif menu == '4' : api.CannyMemory(url,menus[4])
         else:
             print(" ### 해당 메뉴 없음 ### ")
 
