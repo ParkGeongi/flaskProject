@@ -7,30 +7,63 @@ from PIL import Image
 from util.dataset import Dataset
 import matplotlib.pyplot as plt
 from const.crawler import HEADERS
-
-
+ds = Dataset()
 def Origin(url):
     #res = requests.get(self.url, headers={'User-Agent': 'My User Agent 1.0'})
     return (lambda x: np.array(x))(url)
 
 def Gray(url):
-    img = (lambda x: np.array(x))(url)
-    return img[:, :, 0] * 0.114 + img[:, :, 1] * 0.587 + img[:, :, 2] * 0.229
+
+    return (lambda img: img[:, :, 0] * 0.114 + img[:, :, 1] * 0.587 + img[:, :, 2] * 0.229)(url)
 
 def Canny(img):
     return (lambda x: cv2.Canny(x, 10, 100))(img)
 
-def image_read(fname):
-    return (lambda x: cv2.imread('./data/' + x))(fname)
+def HoughLines(edges):
 
-def HoughLines():
-    pass
+    lines = cv2.HoughLinesP(edges, 1, np.pi / 180., 120, minLineLength=50, maxLineGap=5)
+    dst = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
+    if lines is not None:
+        for i in range(lines.shape[0]):
+            pt1 = (lines[i][0][0], lines[i][0][1])
+            pt2 = (lines[i][0][2], lines[i][0][3])
+            cv2.line(dst, pt1, pt2, (255, 0, 0), 2, cv2.LINE_AA)
+    return dst
+
     '''
     람다식의 프로토타입
     def new_model(self, fname) -> object:
         img = cv2.imread('./data/' + fname)
         return img
     '''
+
+
+def Haar(girl, haar):
+    face = haar.detectMultiScale(girl, minSize=(150, 150))
+    if len(face) == 0:
+        print("얼굴인식실패")
+        quit()
+    for (x, y, w, h) in face:
+        print(f"얼굴좌표 : {x} {y} {w} {h}")
+        red = (255, 0, 0)
+        cv2.rectangle(girl, (x, y), (x + w, y + h), red, thickness=20)
+
+    return girl
+
+
+def ExecuteLambda(*params):
+    cmd = params[0]
+    target = params[1]
+    if cmd =='Disk_Img_Read':
+        return (lambda x: cv2.imread(ds.context  + x))(target)
+    elif cmd == 'Memory_Img_Read':
+        return (lambda x:Image.open(BytesIO(requests.get(x, headers=HEADERS).content)))(target)
+    elif cmd == 'Gray':
+        return (lambda img: img[:, :, 0] * 0.114 + img[:, :, 1] * 0.587 + img[:, :, 2] * 0.229)(target)
+    elif cmd =='Image_From_Array':
+        return (lambda x: Image.fromarray(x))(target)
+
+
 
 
 '''
