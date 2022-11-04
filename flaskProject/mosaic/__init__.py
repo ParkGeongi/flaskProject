@@ -1,5 +1,5 @@
 
-from canny.views import LennaController
+from mosaic.views import MenuController
 from util.common import Common
 from util.dataset import Dataset
 
@@ -22,7 +22,7 @@ cv2.destroyAllWindows() 화면에 나타난 윈도우를 종료합니다.
                         일반적으로 위 3개는 같이 사용됩니다.
 '''
 ds = Dataset()
-api = LennaController()
+api = MenuController()
 URL = "https://docs.opencv.org/4.x/roi.jpg"
 IMG = "Lenna.png"
 BUILDING ='https://www.charlezz.com/wordpress/wp-content/uploads/2021/06/www.charlezz.com-opencv-building.jpg'
@@ -36,7 +36,7 @@ FACE_OBJECT = ""
 CAT = "cat.jpg"
 
 if __name__ == '__main__':
-    menus = ["종료", "원본보기", "그레이 스케일","엣지 검출 disk","엣지 검출 memory","직선 검출","얼굴 cognition","모자이크","얼굴 extraction"]
+    menus = ["종료", "원본보기", "그레이 스케일","엣지 검출 disk","엣지 검출 memory","직선 검출","얼굴 인식","모자이크 cat","모자이크 girl", "모녀 모자이크","전체보기"]
 
     while True:
         menu = Common.menu(menus)
@@ -46,10 +46,13 @@ if __name__ == '__main__':
         elif menu == "1": api.Menu_1_Origin(menus[1],URL)
         elif menu == "2": api.Menu_2_Gray(menus[2],URL)
         elif menu == "3": api.Menu_3_CannyDisk(menus[3],IMG)
-        elif menu == '4' : api.Menu_4_CannyMemory(menus[4],URL)
+        elif menu == '4': api.Menu_4_CannyMemory(menus[4],URL)
         elif menu == '5': api.Menu_5_Hough(menus[5],BUILDING)
         elif menu == '6': api.Menu_6_Haar(menus[6],HAAR,GIRL)
-        elif menu == '7': api.Menu_7_Mosaic(menus[7], CAT)
+        elif menu == '7': api.Menu_7_Mosaic_Cat(menus[7], CAT)
+        elif menu == '8': api.Menu_8_Mosaic_Girl(menus[8],HAAR, GIRL)
+        elif menu == '9': api.Menu_9_Mosaic_Two(menus[9], HAAR, GIRL_WITH_MOM)
+        elif menu == '10':api.Menu_10_All_View(menus[10], HAAR, GIRL, GIRL_WITH_MOM)
 
         else:
             print(" ### 해당 메뉴 없음 ### ")

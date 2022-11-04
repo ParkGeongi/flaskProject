@@ -1,5 +1,5 @@
 from io import BytesIO
-import cv2
+import cv2 as cv
 import numpy as np
 import pandas as pd
 import requests
@@ -13,55 +13,82 @@ def Origin(url):
     return (lambda x: np.array(x))(url)
 
 def Gray(url):
-
     return (lambda img: img[:, :, 0] * 0.114 + img[:, :, 1] * 0.587 + img[:, :, 2] * 0.229)(url)
 
 def Canny(img):
-    return (lambda x: cv2.Canny(x, 10, 100))(img)
+    return (lambda x: cv.Canny(x, 1, 100))(img)
 
 def HoughLines(edges):
 
-    lines = cv2.HoughLinesP(edges, 1, np.pi / 180., 120, minLineLength=50, maxLineGap=5)
-    dst = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
+    lines = cv.HoughLinesP(edges, 1, np.pi / 180., 120, minLineLength=50, maxLineGap=5)
+    dst = cv.cvtColor(edges, cv.COLOR_GRAY2BGR)
     if lines is not None:
         for i in range(lines.shape[0]):
             pt1 = (lines[i][0][0], lines[i][0][1])
             pt2 = (lines[i][0][2], lines[i][0][3])
-            cv2.line(dst, pt1, pt2, (255, 0, 0), 2, cv2.LINE_AA)
+            cv.line(dst, pt1, pt2, (255, 0, 0), 2, cv.LINE_AA) # RED
     return dst
 
     '''
     람다식의 프로토타입
     def new_model(self, fname) -> object:
-        img = cv2.imread('./data/' + fname)
+        img = cv.imread('./data/' + fname)
         return img
     '''
-
 
 def Haar(girl, haar):
     face = haar.detectMultiScale(girl, minSize=(150, 150))
     if len(face) == 0:
         print("얼굴인식실패")
         quit()
+
     for (x, y, w, h) in face:
         print(f"얼굴좌표 : {x} {y} {w} {h}")
         red = (255, 0, 0)
-        cv2.rectangle(girl, (x, y), (x + w, y + h), red, thickness=20)
+        x2 = x + w
+        y2 = y+ h
+        cv.rectangle(girl, (x, y), (x2, y2), red, thickness=20)
+        return girl,x,y,x2,y2
 
-    return girl
+def Mosaic(img,rect,size):
+    (x1, y1, x2, y2) = rect
+    w = x2 - x1  # 가로
+    h = y2 - y1  # 세로
+    i_rect = img[y1:y2, x1:x2]
+    i_small = cv.resize(i_rect, (size, size))
+    i_mos = cv.resize(i_small, (w, h), interpolation=cv.INTER_AREA)
+    img2 = img.copy()
+    img2[y1:y2, x1:x2] = i_mos
+
+    return img2
+
+def Mosaic_two(img,size,haar):
+
+    haar = cv.CascadeClassifier(haar)
+    face = haar.detectMultiScale(img, minSize=(150, 150))
+
+    if len(face) == 0:
+        print("얼굴인식실패")
+        quit()
+
+    for (x1, y1, w, h) in face:
+        print(f"얼굴좌표 : {x1} {y1} {w} {h}")
+        red = (255, 0, 0)
+        x2 = x1 + w
+        y2 = y1 + h
+        #cv.rectangle(img, (x1, y1), (x2, y2), red, thickness=10)
 
 
-def ExecuteLambda(*params):
-    cmd = params[0]
-    target = params[1]
-    if cmd =='Disk_Img_Read':
-        return (lambda x: cv2.imread(ds.context  + x))(target)
-    elif cmd == 'Memory_Img_Read':
-        return (lambda x:Image.open(BytesIO(requests.get(x, headers=HEADERS).content)))(target)
-    elif cmd == 'Gray':
-        return (lambda img: img[:, :, 0] * 0.114 + img[:, :, 1] * 0.587 + img[:, :, 2] * 0.229)(target)
-    elif cmd =='Image_From_Array':
-        return (lambda x: Image.fromarray(x))(target)
+    w1 = x2 - x1  # 가로
+    h1 = y2 - y1  # 세로
+    i_rect = img[y1:y2, x1:x2]
+    i_small = cv.resize(i_rect, (size, size))
+    i_mos = cv.resize(i_small, (w1, h1), interpolation=cv.INTER_AREA)
+    img2 = img.copy()
+    img2[y1:y2, x1:x2] = i_mos
+
+    return img2
+
 
 
 
@@ -89,10 +116,10 @@ class LennaModel(object):
         pass
 
     def new_model(self, fname) -> object:
-        img = cv2.imread('./data/' + fname)
+        img = cv.imread('./data/' + fname)
         return img
 
-    def canny(self, src):
+    def canny_1(self, src):
         src = self.gaussian_filter(src)
         src = self.calc_gradient(src)
         src = self.non_maximum_Suppression(src)
