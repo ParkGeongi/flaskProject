@@ -2,7 +2,7 @@
 from mosaic.views import MenuController
 from util.common import Common
 from util.dataset import Dataset
-
+from const.path import HAAR,CTX
 '''
 이미지 읽기의 flag는 3가지가 있습니다.
 cv2.IMREAD_COLOR : 이미지 파일을 Color로 읽어들입니다. 
@@ -26,7 +26,7 @@ api = MenuController()
 URL = "https://docs.opencv.org/4.x/roi.jpg"
 IMG = "Lenna.png"
 BUILDING ='https://www.charlezz.com/wordpress/wp-content/uploads/2021/06/www.charlezz.com-opencv-building.jpg'
-HAAR = ds.context +"haarcascade_frontalface_alt.xml"
+HAAR = CTX + HAAR
 GIRL = "girl.jpg"
 GIRL_INCLINED = "girl_inclined.png"
 GIRL_WITH_MOM = "gir_with_mom.jpg"
@@ -36,9 +36,10 @@ FACE_OBJECT = ""
 CAT = "cat.jpg"
 
 if __name__ == '__main__':
-    menus = ["종료", "원본보기", "그레이 스케일","엣지 검출 disk","엣지 검출 memory","직선 검출","얼굴 인식","모자이크 cat","모자이크 girl", "모녀 모자이크","전체보기"]
+    menus = ["종료", "원본보기", "그레이 스케일","엣지 검출 disk","엣지 검출 memory","직선 검출","얼굴 인식","고양이 모자이크","소녀 모자이크", "모녀 모자이크","전체보기"]
 
     while True:
+
         menu = Common.menu(menus)
         if menu == "0":
             print(f" ### {menus[0]} ### ")

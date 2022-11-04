@@ -48,7 +48,7 @@ def Haar(girl, haar):
         x2 = x + w
         y2 = y+ h
         cv.rectangle(girl, (x, y), (x2, y2), red, thickness=20)
-        return girl,x,y,x2,y2
+        return girl,(x,y,x2,y2)
 
 def Mosaic(img,rect,size):
     (x1, y1, x2, y2) = rect
@@ -62,32 +62,25 @@ def Mosaic(img,rect,size):
 
     return img2
 
-def Mosaic_two(img,size,haar):
+def Mosaic_People(img,size,haar):
 
     haar = cv.CascadeClassifier(haar)
     face = haar.detectMultiScale(img, minSize=(150, 150))
+    dst = img.copy()
 
-    if len(face) == 0:
-        print("얼굴인식실패")
-        quit()
-
-    for (x1, y1, w, h) in face:
-        print(f"얼굴좌표 : {x1} {y1} {w} {h}")
+    for (x, y, w, h) in face:
+        print(f"얼굴좌표 : {x} {y} {w} {h}")
         red = (255, 0, 0)
-        x2 = x1 + w
-        y2 = y1 + h
+        (x1,y1,x2,y2) = (x,y,x+w,y+h)
         #cv.rectangle(img, (x1, y1), (x2, y2), red, thickness=10)
+        w1 = x2 - x1  # 가로
+        h1 = y2 - y1  # 세로
+        i_rect = img[y1:y2, x1:x2]
+        i_small = cv.resize(i_rect, (size, size))
+        i_mos = cv.resize(i_small, (w1, h1), interpolation=cv.INTER_AREA)
+        dst[y1:y2, x1:x2] = i_mos
 
-
-    w1 = x2 - x1  # 가로
-    h1 = y2 - y1  # 세로
-    i_rect = img[y1:y2, x1:x2]
-    i_small = cv.resize(i_rect, (size, size))
-    i_mos = cv.resize(i_small, (w1, h1), interpolation=cv.INTER_AREA)
-    img2 = img.copy()
-    img2[y1:y2, x1:x2] = i_mos
-
-    return img2
+    return dst
 
 
 

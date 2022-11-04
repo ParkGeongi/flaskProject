@@ -6,7 +6,7 @@ from util.dataset import Dataset
 import mosaic
 import requests
 from util.lambdas import Mosaic_Lambdas
-from mosaic.survises import Origin, Gray, Canny, HoughLines, Haar, Mosaic, Mosaic_two
+from mosaic.survises import Origin, Gray, Canny, HoughLines, Haar, Mosaic, Mosaic_People
 import matplotlib.pyplot as plt
 from util.dataset import Dataset
 from PIL import Image
@@ -70,7 +70,7 @@ class MenuController(object):
         girl = params[2]
         # bgr -> rgb
         img1 = cv.cvtColor(Mosaic_Lambdas('Disk_Img_Read',girl), cv.COLOR_BGR2RGB)
-        girl,x1,y1,x2,y2 = Haar(img1, haar)
+        girl,rect = Haar(img1, haar)
         plt.subplot(111), plt.imshow(girl)
         plt.title('Haar Image'), plt.xticks([]), plt.yticks([])
         plt.show()
@@ -92,8 +92,8 @@ class MenuController(object):
         girl = params[2]
         img = cv.cvtColor(Mosaic_Lambdas('Disk_Img_Read', girl), cv.COLOR_BGR2RGB)
         img1 = img.copy()
-        girl,x1,y1,x2,y2 = Haar(img, haar)
-        mos = Mosaic(img1,(x1,y1,x2,y2), 10)
+        girl,rect = Haar(img, haar)
+        mos = Mosaic(img1,rect, 10)
         cv.imwrite(f'{Dataset().context}girl-mosaic.png', mos)
         plt.subplot(111), plt.imshow(mos)
         plt.title('Mosaic Image'), plt.xticks([]), plt.yticks([])
@@ -106,8 +106,8 @@ class MenuController(object):
         girl = params[2]
 
         img = cv.cvtColor(Mosaic_Lambdas('Disk_Img_Read', girl), cv.COLOR_BGR2RGB)
-        img = Mosaic_two(img,10, haar)
-        mos = Mosaic_two(img, 10, haar)
+
+        mos = Mosaic_People(Mosaic_People(img,10, haar), 10, haar)
         plt.subplot(111), plt.imshow(mos)
         plt.title('Mosaic Image'), plt.xticks([]), plt.yticks([])
         plt.show()
@@ -118,38 +118,45 @@ class MenuController(object):
 
         print(f" ### {params[0]} ### ")
         haar = params[1]
-        girl = params[2]
-        img_two = params[3]
-        # bgr -> rgb
-        img1 = cv.cvtColor(Origin(Mosaic_Lambdas('Disk_Img_Read',girl)), cv.COLOR_BGR2RGB)
-        img_copy = img1.copy()
-        img2 = Gray(np.array(Mosaic_Lambdas('Disk_Img_Read',girl)))
-        img3 =Canny(np.array(Mosaic_Lambdas('Disk_Img_Read',girl)))
-        img4 = HoughLines(img3)
-        img5,x1,y1,x2,y2 = Haar(img1, cv.CascadeClassifier(haar))
-        mos = Mosaic(img_copy, (x1, y1, x2, y2), 10)
+        img = params[2]
+        img_people = params[3]
 
-        img_two = cv.cvtColor(Mosaic_Lambdas('Disk_Img_Read', img_two), cv.COLOR_BGR2RGB)
-        mos_two = Mosaic_two(Mosaic_two(img_two, 10, haar), 10, haar)# harr경로를 받아서 servise에서 처리함
+
+        img1 = cv.cvtColor(Origin(Mosaic_Lambdas('Disk_Img_Read',img)), cv.COLOR_BGR2RGB) # bgr -> rgb
+
+        img_copy = img1.copy()
+        img2 = Gray(np.array(Mosaic_Lambdas('Disk_Img_Read',img)))
+
+        img3 =Canny(np.array(Mosaic_Lambdas('Disk_Img_Read',img)))
+
+        img4 = HoughLines(img3)
+
+        img5,rect = Haar(img1, cv.CascadeClassifier(haar))
+
+        mos = Mosaic_People(img_copy,10,haar) #img, size, haar경로
+
+        #mos_two = Mosaic_People(Mosaic_People(cv.cvtColor(Mosaic_Lambdas('Disk_Img_Read', img_people), cv.COLOR_BGR2RGB), 10, haar),10,haar)# harr경로를 받아서 servise에서 처리함
+
+        img_people = cv.cvtColor(Mosaic_Lambdas('Disk_Img_Read', img_people), cv.COLOR_BGR2RGB)
+        mos_img = Mosaic_People(Mosaic_People(img_people, 10, haar),10,haar)
+
+
 
 
         plt.subplot(331), plt.imshow(img_copy)
-        plt.title('Original Image'), plt.xticks([]), plt.yticks([])
+        plt.title('Original '), plt.xticks([]), plt.yticks([])
         plt.subplot(332), plt.imshow(img2, cmap='gray')
-        plt.title('Gray Image'), plt.xticks([]), plt.yticks([])
+        plt.title('Gray '), plt.xticks([]), plt.yticks([])
         plt.subplot(333), plt.imshow(img3, cmap='gray')
-        plt.title('Canny Image'), plt.xticks([]), plt.yticks([])
+        plt.title('Canny '), plt.xticks([]), plt.yticks([])
         plt.subplot(334), plt.imshow(img4)
-        plt.title('Hough Image'), plt.xticks([]), plt.yticks([])
+        plt.title('Hough '), plt.xticks([]), plt.yticks([])
         plt.subplot(335), plt.imshow(img5)
-        plt.title('Haar Image'), plt.xticks([]), plt.yticks([])
+        plt.title('Haar '), plt.xticks([]), plt.yticks([])
         plt.subplot(336), plt.imshow(mos)
-        plt.title('Mosaic Image'), plt.xticks([]), plt.yticks([])
-
-        plt.subplot(337), plt.imshow(mos_two)
-        plt.title('Mosaic Image'), plt.xticks([]), plt.yticks([])
-        plt.show()
-
+        plt.title('Mosaic '), plt.xticks([]), plt.yticks([])
+        plt.subplot(337), plt.imshow(mos_img)
+        plt.title('Mosaic '), plt.xticks([]), plt.yticks([])
         plt.show()
         #girl = cv.cvtColor(img1, cv.COLOR_RGB2BGR)
         #girl = cv.resize(girl, (300, 300))

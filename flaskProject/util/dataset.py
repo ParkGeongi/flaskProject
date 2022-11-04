@@ -13,7 +13,7 @@ class Dataset(object):
     #데이터를 읽고 (getter = property) / 쓰기 (setter) 기능을 추가한다.
 
     @property #getter가 반환
-    def context(self) -> str: return './data/'
+    def context(self) -> str: return self._context
     @context.setter
     def context(self,context): self._context = context
 

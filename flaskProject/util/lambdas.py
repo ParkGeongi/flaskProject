@@ -2,6 +2,7 @@ from io import BytesIO
 import cv2 as cv
 import requests
 from const.crawler import HEADERS
+from const.path import CTX
 from util.dataset import Dataset
 from PIL import Image
 
@@ -10,7 +11,7 @@ def Mosaic_Lambdas(*params):
     cmd = params[0]
     target = params[1]
     if cmd =='Disk_Img_Read':
-        return (lambda x: cv.imread(ds.context  + x))(target)
+        return (lambda x: cv.imread(CTX  + x))(target)
     elif cmd == 'Memory_Img_Read':
         return (lambda x:Image.open(BytesIO(requests.get(x, headers=HEADERS).content)))(target)
     elif cmd == 'Gray':
