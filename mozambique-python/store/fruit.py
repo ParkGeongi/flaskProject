@@ -10,8 +10,8 @@ def new_fruits_df():
     df = df.set_index("")
     print(df)
 
-    print(int(sum(df['가격']) / 3))
-    print(int(sum(df['판매량']) / 3))
+    print(int(df['가격'].mean()))
+    print(int(df['판매량'].mean()))
 if __name__ == '__main__':
     new_fruits_df()
 
