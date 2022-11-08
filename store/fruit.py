@@ -9,7 +9,7 @@ def new_fruits_df():
     df = pd.DataFrame({j : ls1[i]for i , j in enumerate(ls)})
     df = df.set_index("")
     print(df)
-
+    print('a')
     print(int(df['가격'].mean()))
     print(int(df['판매량'].mean()))
 if __name__ == '__main__':
