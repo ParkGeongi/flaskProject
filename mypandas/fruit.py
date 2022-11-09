@@ -1,6 +1,5 @@
 import pandas as pd
 
-
 def new_fruits_df():
 
     #ls = [['제품','사과'],['가격',1800],['제품','딸기'],['가격',1500]]
