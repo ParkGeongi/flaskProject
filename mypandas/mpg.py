@@ -1,6 +1,13 @@
+import warnings
+
 import numpy as np
 import pandas as pd
-from matplotlib import pyplot as plt
+from matplotlib import pyplot as plt, font_manager, rc
+
+warnings.simplefilter(action='ignore', category=FutureWarning)
+font_path = "C:/Windows/Fonts/malgun.ttf"
+font = font_manager.FontProperties(fname=font_path).get_name()
+rc('font', family =font)
 
 my_meta = {
     "manufacturer": "회사",
@@ -44,7 +51,7 @@ class Test(object):
         self.mpg = pd.read_csv('./data/mpg.csv')
         self.my_mpg = None
 
-    def head(self):
+    def head(self) :
         print(self.mpg.head())
 
     def tail(self):
@@ -56,8 +63,10 @@ class Test(object):
     def info(self):
         print(self.mpg.info())
 
+
     def descride(self):
         print(self.mpg.describe())
+
 
     def describe_all(self):
         print(self.mpg.describe(include='all'))
@@ -74,19 +83,21 @@ class Test(object):
         print(self.my_mpg.columns)
         print(self.my_mpg.head())
 
-    def graph_test(self):
+    def graph_freq(self):
 
         self.derived_variable()
         count_test =self.my_mpg['연비테스트'].value_counts()
         count_test.plot.bar(rot = 0)
-        plt.show()
+
         print(count_test)
+        self.my_mpg.plot.hist()
+        plt.show()
 
     def graph_save(self):
-        self.graph_test()
+        self.graph_freq()
         count_test = self.my_mpg['연비테스트'].value_counts()
         count_test.plot.bar(rot=0)
-        plt.savefig('mpg.png')
+        plt.savefig('./save/mpg.png')
 
     def displ(self):
         self.change_meta()
@@ -102,6 +113,7 @@ class Test(object):
         t = self.my_mpg
 
         cty1 = t.query('회사.str.contains("audi")')
+
         cty2 = t.query('회사.str.contains("toyota")')
 
         mean1 = cty1['시내연비'].mean()
@@ -166,45 +178,90 @@ menus = ['종료','head','tail','shape','info','descride','describe all','rename
          '평균연비가 가장 높은 자동차 1~3위 출력하시오'# mpg 158페이지 문제
          ]
 
+MENUS = ["종료","mpg 앞부분 확인",
+         "mpg 뒷부분 확인",
+         "행,열 출력",
+         "데이터 속성 확인",
+         "요약 통계량 출력",
+         "문자 변수 요약 통계량 함께 출력",
+         # mpg 129페이지
+         "manufacturer 를 company 로 변경",
+         "test 변수 생성" ,
+         # cty 와 hwy 변수를 머지(merge)하여 total 
+         # 변수 생성하고 20이상이면 pass 미만이면 fail 저장
+
+         "test 빈도표 만들기",
+         "test 빈도 막대 그래프 그리기",
+         # mpg 144페이지 문제
+         "displ(배기량)이 4이하와 5이상 자동차의 hwy(고속도로 연비) 비교",
+         "아우디와 토요타 중 시내연비(cty) 평균이 높은 회사 검색",
+         "쉐보레, 포드, 혼다 데이터 출력과 시외연비(hwy) 전체 평균",
+         # mpg 150페이지 문제
+         # 메타데이터가 category, cty 데이터는 해당 raw 데이터인 객체생성
+         # 후 다음 문제 풀이
+         "suv / 컴팩 자동차 중 어떤 자동차의 시내연비 평균이 더 높은가?",
+         # mpg 153페이지 문제
+         "아우디차에서 시외 연비 1~5위 출력하시오",
+         # mpg 158페이지 문제
+         "평균연비가 가장 높은 자동차 1~3위 출력하시오"
+         ]
 #cty와 hwy merge 하여 total 변수 생성
 
 t = Test()
 
 if __name__ == '__main__':
+
     while True :
-        menu = menu_st(menus)
+        menu = menu_st(MENUS)
 
         if menu == 0:
+
             break
+
         elif menu == 1:
             t.head()
+
         elif menu == 2:
             t.tail()
+
         elif menu == 3:
             t.shape()
+
         elif menu == 4:
             t.info()
+
         elif menu == 5:
             t.descride()
+
         elif menu == 6:
             t.describe_all()
+
         elif menu == 7:
             t.change_meta()
+
         elif menu == 8:
             t.derived_variable()
+
         elif menu == 9:
-            t.graph_test()
+            t.graph_freq()
+
         elif menu == 10:
             t.graph_save()
+
         elif menu == 11:
             t.displ()
+
         elif menu == 12:
             t.comp_cty()
+
         elif menu == 13:
             t.comp_three()
+
         elif menu == 14:
             t.cty_two()
+
         elif menu == 15:
             t.audi_comp()
+
         elif menu == 16:
             t.eff_rank()
