@@ -11,8 +11,6 @@ class TitanicController(object):
 
     dataset = Dataset()
     model = TitanicModel()
-    def mining(self):
-        pass
 
     def preprocess(self, train, test) -> object: #전처리
 
@@ -23,10 +21,10 @@ class TitanicController(object):
         this.id = this.test['PassengerId']
         # columns 편집과정
 
-        this = model.sex_nominal(this)
+        this = model.sex_norminal(this)
         this = model.age_ordinal(this)
         this = model.fare_ordinal(this)
-        this = model.embarked_nominal(this)
+        this = model.embarked_norminal(this)
         this = model.title_norminal(this)
         this = model.drop_features(this,
                                    'PassengerId', 'Name', 'Sex', 'Age',
@@ -43,8 +41,11 @@ class TitanicController(object):
         this.train = model.creat_train(this)
         return this
 
-    def learning(self):
-        pass
+    def learning(self,train,test):
+        this = self.modeling(train,test)
+        accuracy = self.model.get_accuracy(this)
+        print(f'사이킷런 알고리즘 정확도 : {accuracy} %')
+
 
     def sumit(self):
         pass
@@ -54,10 +55,9 @@ class TitanicController(object):
 if __name__ == '__main__':
     C = TitanicController()
     this = Dataset()
-    this = C.preprocess("train.csv","test.csv")
-    print(this.train.columns)
-    print(this.train.head())
-
-
-
-
+    #this = C.preprocess("train.csv","test.csv")
+    #print(this.train.columns)
+    #print(this.train.head())
+    this = C.preprocess('train.csv', 'test.csv')
+    print(this.train)
+    print(this.test)

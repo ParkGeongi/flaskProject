@@ -29,6 +29,7 @@ class MenuController(object):
         print(f' cv2 버전 {cv.__version__}')  # cv2 버전 4.6.0
         print(f' Shape is {img.shape}')
 
+
     @staticmethod
     def Menu_2_Gray(*params):
         print(f" ### {params[0]} ### ")

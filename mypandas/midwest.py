@@ -8,7 +8,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 font_path = "C:/Windows/Fonts/malgun.ttf"
 font = font_manager.FontProperties(fname=font_path).get_name()
 rc('font', family =font)
-
+d
 my_meta = {
     'PID' : "신원확인",
     'county' : '군',

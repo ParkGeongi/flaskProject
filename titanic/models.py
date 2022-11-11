@@ -1,8 +1,11 @@
 import numpy as np
 import pandas as pd
 
-
+from sklearn.model_selection import KFold
+from sklearn.model_selection import cross_val_score
+from sklearn.ensemble import RandomForestClassifier
 from util.dataset import Dataset
+
 class TitanicModel(object):
 
     dataset = Dataset()
@@ -61,7 +64,7 @@ class TitanicModel(object):
       #return this 할 필요없다. ordinal, 1 2 3 중 하나로 나오기 때문에
 
     @staticmethod
-    def sex_nominal(this)->object: # male -> 0 female -> 1
+    def sex_norminal(this)->object: # male -> 0 female -> 1
         #gender_mapping = {"male" : 0 , "female" : 1} # mapping은 dic
         for i in [this.train,this.test]:
             i['Gender'] = i['Sex'].map({"male" : 0 , "female" : 1})
@@ -89,13 +92,14 @@ class TitanicModel(object):
         return this
 
     @staticmethod
-    def embarked_nominal(this)->object: # 승선 항구 C Q S
+    def embarked_norminal(this)->object: # 승선 항구 C Q S
         this.train = this.train.fillna({'Embarked':'S'})
         this.test = this.test.fillna({'Embarked': 'S'})
         for i in [this.train,this.test]:
             i['Embarked'] = i['Embarked'].map({'S' : 1, 'C' :2, 'Q': 3})
         return this
 
+    @staticmethod
     def title_norminal(this) -> object:
         combine = [this.train, this.test]
         for i in combine:
@@ -117,13 +121,28 @@ class TitanicModel(object):
             })
         return this
 
+    @staticmethod
+    def creat_k_fold()->object:
+        return KFold(n_splits=10, shuffle= True, random_state=0)
+
+    @staticmethod
+    def get_accuracy(this):
+        score = cross_val_score(RandomForestClassifier(),
+                                this.train,
+                                this.test,
+                                cv = TitanicModel.creat_k_fold(),
+                                n_jobs=1,
+                                scoring='accuracy')
+
+        return round(np.mean(score)*100, 2)
+
 
 if __name__ == '__main__':
     t = TitanicModel()
     this = Dataset()
     this.train = t.new_model("train.csv")
     this.test = t.new_model("test.csv")
-    this = TitanicModel.sex_nominal(this)
+    this = TitanicModel.sex_norminal(this)
     this = TitanicModel.fare_ordinal(this)
     this = TitanicModel.embarked_nominal(this)
     this = TitanicModel.age_ordinal(this)
