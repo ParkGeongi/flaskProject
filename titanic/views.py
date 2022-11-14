@@ -1,6 +1,9 @@
 from titanic.models import TitanicModel
 from util.dataset import Dataset
-
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.linear_model import  LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn import svm
 class TitanicController(object):
 
     def __int__(self):
@@ -37,14 +40,20 @@ class TitanicController(object):
     def modeling(self, train, test)-> object: #모델 생성
         model =self.model
         this = self.preprocess(train, test)
-        this.label = model.creat_label(this)
-        this.train = model.creat_train(this)
+        this.label = model.create_label(this)
+        this.train = model.create_train(this)
         return this
 
     def learning(self,train,test):
         this = self.modeling(train,test)
-        accuracy = self.model.get_accuracy(this)
-        print(f'사이킷런 알고리즘 정확도 : {accuracy} %')
+        accuracy1 = self.model.get_accuracy(this ,DecisionTreeClassifier())
+        accuracy2 = self.model.get_accuracy(this, LogisticRegression())
+        accuracy3 = self.model.get_accuracy(this, RandomForestClassifier())
+        accuracy4 = self.model.get_accuracy(this, svm.SVC())
+        print(f'DecisionTreeClassifier 알고리즘 정확도 : {accuracy1} %')
+        print(f'LogisticRegression 알고리즘 정확도 : {accuracy2} %')
+        print(f'RandomForestClassifier 알고리즘 정확도 : {accuracy3} %')
+        print(f'서포트 벡터 머신 알고리즘 정확도 : {accuracy4} %')
 
 
     def sumit(self):

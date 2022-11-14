@@ -4,6 +4,7 @@ from titanic.views import TitanicController
 from util.common import Common
 
 
+
 if __name__ == '__main__':
 
     while True:
@@ -22,7 +23,7 @@ if __name__ == '__main__':
 
         elif menu == "2":
             print(" ### Modeling ###")
-            df = api.modeling('train.csv','test.csv')
+            this = api.modeling('train.csv','test.csv')
             print(this.train.head())
             print(this.train.columns)
 

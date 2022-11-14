@@ -45,11 +45,11 @@ class TitanicModel(object):
    '''
 
     @staticmethod
-    def creat_train(this)-> object:
+    def create_train(this)-> object:
         return this.train.drop('Survived', axis = 1)
 
     @staticmethod
-    def creat_label(this) -> object:
+    def create_label(this) -> object:
         return this.train['Survived']
 
 
@@ -122,19 +122,21 @@ class TitanicModel(object):
         return this
 
     @staticmethod
-    def creat_k_fold()->object:
+    def create_k_fold()->object:
         return KFold(n_splits=10, shuffle= True, random_state=0)
 
     @staticmethod
-    def get_accuracy(this):
-        score = cross_val_score(RandomForestClassifier(),
+    def get_accuracy(this, algo):
+
+        score = cross_val_score(algo,
                                 this.train,
-                                this.test,
-                                cv = TitanicModel.creat_k_fold(),
+                                this.label,
+                                cv = TitanicModel.create_k_fold(),
                                 n_jobs=1,
                                 scoring='accuracy')
 
         return round(np.mean(score)*100, 2)
+
 
 
 if __name__ == '__main__':
