@@ -47,11 +47,11 @@ class TitanicController(object):
     def learning(self,train,test):
         this = self.modeling(train,test)
         accuracy1 = self.model.get_accuracy(this ,DecisionTreeClassifier())
-        accuracy2 = self.model.get_accuracy(this, LogisticRegression())
+        #accuracy2 = self.model.get_accuracy(this, LogisticRegression())
         accuracy3 = self.model.get_accuracy(this, RandomForestClassifier())
         accuracy4 = self.model.get_accuracy(this, svm.SVC())
         print(f'DecisionTreeClassifier 알고리즘 정확도 : {accuracy1} %')
-        print(f'LogisticRegression 알고리즘 정확도 : {accuracy2} %')
+        #print(f'LogisticRegression 알고리즘 정확도 : {accuracy2} %')
         print(f'RandomForestClassifier 알고리즘 정확도 : {accuracy3} %')
         print(f'서포트 벡터 머신 알고리즘 정확도 : {accuracy4} %')
 

@@ -1,3 +1,4 @@
+from machine.crime import CrimeService, CRIME_MENUS, crime_menu
 '''from machine.stroke import STROKE_MENUS, stroke_menu
 from machine.stroke import StrokeService
 def my_menu(ls):
@@ -21,8 +22,10 @@ if __name__ == '__main__':
                 print(" ### Error ### ")
 
             '''
-from machine.oklahoma import OKLAHOMA_MENUS, oklahoma_menu
-from machine.oklahoma import OklahomaService
+#from machine.oklahoma import OKLAHOMA_MENUS, oklahoma_menu
+#from machine.oklahoma import OklahomaService
+
+
 
 
 def my_menu(ls):
@@ -32,16 +35,17 @@ def my_menu(ls):
 
 
 if __name__ == '__main__':
-    t = OklahomaService()
+    t = CrimeService()
     while True:
-        menu = my_menu(OKLAHOMA_MENUS)
+        menu = my_menu(CRIME_MENUS)
         if menu == '0':
             print("종료")
             break
         else:
-            oklahoma_menu[menu](t)
-
+            crime_menu[menu](t)
+'''
             try:
-                oklahoma_menu[menu](t)
+                crime_menu[menu](t)
             except KeyError:
-                print(" ### Error ### ")
+               print(" ### Error ### ")
+'''

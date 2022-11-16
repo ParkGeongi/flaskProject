@@ -66,6 +66,8 @@ class StrokeService:
     1.스펙보기
     '''
     def spec(self):
+        pd.set_option('display.max_columns',None)
+        pd.set_option('display.max_rows', None)
         print(" --- 1.Shape ---")
         print(self.stroke.shape)
         print(" --- 2.Features ---")

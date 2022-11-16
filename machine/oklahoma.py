@@ -120,7 +120,7 @@ class OklahomaService:
     '''
     def rename_meta(self):
         t = self.oklahoma
-        t.drop('CONP',axis = 1, inplace = True)
+        t.drop(['CONP'],axis = 1, inplace = True)
         print(t.shape)
 
 
@@ -136,7 +136,7 @@ class OklahomaService:
     인터벌 (구간변수)= ['나이','침실수','월 전기료','월 가스비','가계 소득','자녀 수','방 수','주택 가격']
     '''
     def interval_variables(self):
-        self.rename_meta()
+        #self.rename_meta()
         pd.options.display.float_format = '{:.2f}'.format
         t = self.my_oklahoma
         interval = ['나이','침실 수','월 전기료','월 가스비','가계 소득','자녀 수','방 수','주택 가격']
@@ -154,7 +154,7 @@ class OklahomaService:
         t1.to_csv("./save/comb31-IQR30.csv",index=False)
 
     def norminal_variables(self):
-        self.interval_variables()
+        #self.interval_variables()
         df = pd.read_csv('./save/comb31-IQR30.csv')
         normina = ['COW','FPARC','LANX','SCH','SCHL']
         print(df[normina].isnull().mean())
@@ -187,7 +187,7 @@ class OklahomaService:
         print(self.target1.shape)
 
     def partition(self):
-        self.target()
+        #self.target()
         X_train, X_test, y_train, y_test = train_test_split(self.data1, self.target1,
                                                             test_size=0.5, random_state=42, stratify=self.target1)
 
@@ -206,11 +206,11 @@ class OklahomaService:
 
 
     def predict(self):
-        self.partition()
-        self.modeling()
-        self.learning()
+        #self.partition()
+        #self.modeling()
+        #self.learning()
         pred = self.model.predict(self.X_test1)
-        print('트레이닝 셋 정확도 : {:.5f}'.format(self.model.score(self.X_train1,self.y_train1)))
-        print('테스트 셋 정확도 : {:.5f}'.format(accuracy_score(self.y_test1,pred)))
+        print('트레이닝 셋 정확도 : {:.5f}'.format(self.model.score(self.X_train1, self.y_train1)))
+        print('테스트 셋 정확도 : {:.5f}'.format(accuracy_score(self.y_test1, pred)))
 
 
