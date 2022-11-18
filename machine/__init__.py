@@ -1,3 +1,5 @@
+import dataclasses
+
 from machine.crime import CrimeService, CRIME_MENUS, crime_menu
 '''from machine.stroke import STROKE_MENUS, stroke_menu
 from machine.stroke import StrokeService
